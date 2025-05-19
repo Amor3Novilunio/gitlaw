@@ -1,15 +1,32 @@
 use std::env;
 use std::process::{Command, exit};
 
+// flow
+// initial check on toml
+// check for models & mode what to use
+// validate path or api url
+// match pattern applied when they do commit
+// gitlaw commit
+// run the ai model -> compiles all messages from diff -> creates a short readable response message (for new let it be whatever once its working we can apply the rules of conventional result of this message)
+// provide the user response to re-generate the proceed with the provided result or cancel the commit
+// once all the above are done we can proceed with
+// after proceeding generate a md file based on law sequence
+// inside this file will contain a before and after based on what you changed
+// it will look like this
+// line number from which something changed
+// before
+// code from before
+// after
+// code from after
+
+
 fn main() {
     let args: Vec<String> = env::args().skip(1).collect();
 
     let git_command = Command::new("git");
 
     match args.get(0).map(String::as_str) {
-        Some("commit") => {
-            print!("hehe");
-        }
+        Some("commit") => println!("Pending"),
         Some(_) => passthrough(git_command, args),
         None => {
             eprintln!("command not found");

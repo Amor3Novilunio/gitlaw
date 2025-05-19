@@ -1,74 +1,96 @@
-# Gitlaw
+# 🧑‍⚖️ Gitlaw
 
-**Gitlaw** is a command-line tool that enforces structured, meaningful commit practices by validating commit messages and pairing them with self-documented change files.
-
-## 🚀 Purpose
-
-Gitlaw helps developers write clear, consistent commit messages and generate documentation that explains each commit's intent and purpose. This creates a readable, maintainable Git history and encourages intentional development.
-
-## 🔧 How It Works
-
-* Developers run `gitlaw commit "<message>"`
-* Gitlaw validates the commit message based on custom rules
-* Gitlaw parses a unique identifier (e.g., `law42`) from the message
-* Each law ID must be unique (e.g., no duplicate `law42`)
-* If a corresponding `.gitlaw/law42.md` file doesn't exist:
-
-  * Gitlaw creates a template Markdown file for the user to fill in
-  * The commit is blocked until the file is edited
-* Once the `.md` is completed and the message passes validation, Gitlaw forwards the commit to Git
-
-## 🔲 Features
-
-* Commit message validation (prefixes, length, empty content, etc.)
-* Auto-generates structured `.md` files for each commit reference
-* Enforces documentation before allowing commits
-* Configurable rules and templates via `gitlaw.toml`
-* Local-first, zero-dependency workflow
-
-## 📖 Commit Message Format
-
-Example:
-
-```bash
-feat(auth):law42
-```
-
-This will trigger Gitlaw to:
-
-* Validate that `feat(auth):` is a valid prefix
-* Look for or generate `.gitlaw/law42.md`
-
-## 🖄 Generated File Template
-
-```markdown
-# feat(auth):law42
-
-## What this change does
-- [ ] Describe the feature or fix
-
-## Why it matters
-- [ ] Explain the problem being solved or the value added
-
-## Notes (optional)
-...
-```
-
-## ⚖️ Philosophy
-
-Gitlaw is built on the idea that better commit messages create better software history. By forcing intention and documentation at the moment of commit, it enables:
-
-* Easier collaboration
-* More informed reviews
-* Traceable decision making
-* Human-readable changelogs
-
-## ✅ Why Use Gitlaw?
-
-* You want your commits to be meaningful and traceable
-* You’re tired of vague messages like `fix bug` or `update code`
-* You want local documentation without using Jira, Notion, or GitHub PRs
+**A modern, opinionated Git CLI wrapper that enforces commit structure, enables AI-assisted messages, and auto-documents your code history — one law at a time.**
 
 ---
 
-Built with Rust. Inspired by discipline. Driven by clarity.
+## ✨ Features
+
+- 🔒 **Enforced commit rules** (conventional commits, no WIP, length limits)
+- 🤖 **AI-generated commit messages** based on your Git diff
+- 📋 **Interactive commit UI** — approve, rewrite, or regenerate messages
+- 📁 **Auto-generates law documents** like `gitlaw/law42.md`
+- 🧠 **Diff-based changelogs** — every law captures before/after changes
+- 🧼 **Passthrough for all non-commit Git commands**
+
+---
+
+## 🛠️ Installation
+
+```bash
+git clone https://github.com/your-username/gitlaw.git
+cd gitlaw
+cargo build --release
+```
+
+Then add it to your `PATH`:
+
+```bash
+export PATH="$PWD/target/release:$PATH"
+```
+
+---
+
+## ⚙️ Usage
+
+### 🧑‍⚖️ Commit (AI + Validation)
+
+```bash
+gitlaw commit
+```
+
+Gitlaw will:
+1. Analyze your staged changes
+2. Ask AI to generate a conventional commit message
+3. Present options to accept, regenerate, or write your own
+4. Automatically commit with the chosen message
+5. Save the diff as `gitlaw/law42.md` if the message includes `law42`
+
+### 🧪 Example
+
+```bash
+gitlaw commit
+```
+
+Produces:
+
+```bash
+feat(law42): fix concurrent config handling
+```
+
+And creates:
+
+```
+gitlaw/
+  └─ law42.md   # includes before/after code blocks per file
+```
+
+---
+
+## 🚀 Roadmap
+
+- [x] Basic Git passthrough
+- [ ] Commit validation (prefix, WIP block, max length)
+- [ ] Extract commit message from args
+- [ ] AI-generated commit messages (OpenAI/local model)
+- [ ] Interactive CLI prompt for message selection
+- [ ] Auto-law doc generation from diffs
+- [ ] Customizable commit rules via config(optional? maybe? who knows?)
+- [ ] Plugin system for rule extensions(optional? maybe? who knows?)
+
+## ⚙️ AI Modes
+
+Gitlaw supports two modes of AI commit generation:
+
+### Offline Mode
+- Runs AI models **locally**
+- Requires downloading a model (e.g., `deepseek`)
+- No internet required after setup
+
+### Online Mode
+- Uses public APIs like OpenAI or Groq
+- Requires an API key and an internet connection
+- May be subject to rate limits or usage caps
+- ⚠️ online models have a token limit per request for free tier
+   - 🧠 Think of tokens like words + punctuation:
+   - "fix: update docs" = ~5 tokens
