@@ -1,5 +1,7 @@
-use std::env;
-use std::process::{Command, exit};
+use std::{env, process::{Command, exit}};
+mod helpers;
+mod models;
+use models::gitlaw_toml::{load_from_file};
 
 // flow
 // initial check on toml
@@ -19,8 +21,9 @@ use std::process::{Command, exit};
 // after
 // code from after
 
-
 fn main() {
+    let toml_config = load_from_file();
+
     let args: Vec<String> = env::args().skip(1).collect();
 
     let git_command = Command::new("git");

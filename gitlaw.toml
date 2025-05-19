@@ -1,10 +1,10 @@
 [ai]
-# "online" or "offline"
-mode = "offline"
+# "Online" or "Offline"
+mode = "Offline"
 # e.g., "deepseek", "gpt-3.5-turbo"
 model = "deepseek"
 # For offline models
-path = ""
+path = "hello world"
 # For online API's
 url = "http://localhost:11434/api/generate"
 # Optional: only needed for online APIs
@@ -14,4 +14,4 @@ api_key = ""
 # | 0.0  | Deterministic (always same output) |
 # | 0.7  | Balanced (some variation)          |
 # | 1.0  | Creative, can be weird             |
-temperature = ""
+temperature = 0.7
