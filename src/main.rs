@@ -26,7 +26,6 @@ use models::toml::read::{read_from_file};
 
 fn main() {
     let toml_config = read_from_file();
-    println!("{}",toml_config.ai.path);
 
     let args: Vec<String> = env::args().skip(1).collect();
 
