@@ -1,1 +1,1 @@
-pub mod gitlaw_toml;
+pub mod toml;

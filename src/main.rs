@@ -1,7 +1,10 @@
-use std::{env, process::{Command, exit}};
+use std::{
+    env,
+    process::{Command, exit},
+};
 mod helpers;
 mod models;
-use models::gitlaw_toml::{load_from_file};
+use models::toml::read::{read_from_file};
 
 // flow
 // initial check on toml
@@ -22,7 +25,8 @@ use models::gitlaw_toml::{load_from_file};
 // code from after
 
 fn main() {
-    let toml_config = load_from_file();
+    let toml_config = read_from_file();
+    println!("{}",toml_config.ai.path);
 
     let args: Vec<String> = env::args().skip(1).collect();
 
