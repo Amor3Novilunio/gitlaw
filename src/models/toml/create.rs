@@ -3,6 +3,9 @@ use crate::std_error_exit;
 use serde::Serialize;
 use std::fs::write;
 
+// ----------------------
+// Ai Table Model
+// ----------------------
 #[derive(Serialize)]
 pub struct AiTable {
     mode: Mode,
@@ -14,7 +17,10 @@ pub struct AiTable {
 }
 
 pub fn create_toml(path: &str) {
-    let config: Config<AiTable> = Config {
+    // ----------------------
+    // Default Configuration
+    // ----------------------
+    let config = Config {
         ai: AiTable {
             mode: Mode::Offline,
             path: "".into(),
@@ -25,13 +31,19 @@ pub fn create_toml(path: &str) {
         },
     };
 
+    // ----------------------
+    // Serialize Config
+    // ----------------------
     let parsed_config = match toml::to_string_pretty(&config) {
         Ok(res) => res,
-        Err(err) => std_error_exit!(format!("{}", err)),
+        Err(err) => std_error_exit!(format!("failed To Serialize Toml Config | {}", err)),
     };
 
+    // ----------------------
+    // Create Config File
+    // ----------------------
     match write(path, parsed_config) {
         Ok(res) => res,
-        Err(err) => std_error_exit!(format!("{}", err)),
+        Err(err) => std_error_exit!(format!("failed to Create Config File | {}", err)),
     }
 }
