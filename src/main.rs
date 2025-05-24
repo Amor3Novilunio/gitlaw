@@ -3,8 +3,8 @@ use std::{
     process::{Command, exit},
 };
 mod helpers;
-mod models;
-use models::toml::read::{read_from_file};
+mod modules;
+use modules::toml::read::read_from_file;
 
 // flow
 // initial check on toml

@@ -3,12 +3,14 @@ use std::fs::read_to_string;
 use crate::std_error_exit;
 use serde::de::DeserializeOwned;
 
+use toml::from_str;
+
 use super::types::Config;
 
 use super::create::create_toml;
 
 // ----------------------
-// Extract ai Table From Toml
+// Extract table Configuration
 // ----------------------
 pub fn extract_table<T: DeserializeOwned>() -> Config<T> {
     // ----------------------
@@ -35,7 +37,7 @@ pub fn extract_table<T: DeserializeOwned>() -> Config<T> {
     // ----------------------
     // Deserialized Toml Data
     // ----------------------
-    match toml::from_str::<Config<T>>(&load_toml_config) {
+    match from_str::<Config<T>>(&load_toml_config) {
         Ok(res) => res,
         Err(err) => std_error_exit!(format!("Invalid TOML format | {}", err)),
     }
