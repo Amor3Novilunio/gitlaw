@@ -5,14 +5,12 @@ use serde::de::DeserializeOwned;
 
 use toml::from_str;
 
-use super::types::Config;
-
 use super::create::create_toml;
 
 // ----------------------
 // Extract table Configuration
 // ----------------------
-pub fn extract_table<T: DeserializeOwned>() -> Config<T> {
+pub fn extract_table<T: DeserializeOwned>() -> T {
     // ----------------------
     // Toml Name & Path Location
     // ----------------------
@@ -37,7 +35,7 @@ pub fn extract_table<T: DeserializeOwned>() -> Config<T> {
     // ----------------------
     // Deserialized Toml Data
     // ----------------------
-    match from_str::<Config<T>>(&load_toml_config) {
+    match from_str::<T>(&load_toml_config) {
         Ok(res) => res,
         Err(err) => std_error_exit!(format!("Invalid TOML format | {}", err)),
     }

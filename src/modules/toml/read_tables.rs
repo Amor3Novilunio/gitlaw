@@ -1,23 +1,23 @@
 use super::read_helper::extract_table;
-use super::types::{Config, Mode};
-use serde::Deserialize;
+use super::types::{AiTable, DownloadTable, EngineTable};
 
 // ----------------------
-// Ai Table Model
+// Extract AI Table From Toml
 // ----------------------
-#[derive(Deserialize)]
-pub struct AiTable {
-    pub mode: Mode,
-    pub path: String,
-    pub model: String,
-    url: String,
-    api_key: String,
-    pub temperature: f32,
+pub fn extract_ai_table() -> AiTable {
+    extract_table::<AiTable>()
 }
 
 // ----------------------
-// Extract ai Table From Toml
+// Extract engine Table From Toml
 // ----------------------
-pub fn extract_ai_table() -> Config<AiTable> {
-    extract_table::<AiTable>()
+pub fn extract_engine_table() -> EngineTable {
+    extract_table::<EngineTable>()
+}
+
+// ----------------------
+// Extract download Table From Toml
+// ----------------------
+pub fn extract_download_table() -> DownloadTable {
+    extract_table::<DownloadTable>()
 }

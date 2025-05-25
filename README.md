@@ -94,3 +94,21 @@ Gitlaw supports two modes of AI commit generation:
 - ⚠️ online models have a token limit per request for free tier
    - 🧠 Think of tokens like words + punctuation:
    - "fix: update docs" = ~5 tokens
+
+
+# NEW REQUIREMENTS
+
+ - no more online
+ - download ph-2 model | these models have a pros n cons
+ - we need to install llama.cpp not just phi-2
+
+## I REALLY NEED TO UPDATE THIS README DUE TO NEW REQUIREMENTS
+
+
+| Level  | Quality       | Size               | Speed         | Notes                                                       |
+| ------ | ------------- | ------------------ | ------------- | ----------------------------------------------------------- |
+| **Q2** | 🟥 Low        | ✅ Smallest         | ⚡ Fastest     | Often too lossy for good summaries                          |
+| **Q3** | 🟧 Medium-low | ✅ Small            | ⚡ Fast        | Okay for basic tasks, but not reliable for commit summaries |
+| **Q4** | 🟨 Good       | ✅ Balanced         | ⚡ Fast enough | 👍 Great quality/speed tradeoff (RECOMMENDED)               |
+| **Q5** | 🟩 Very good  | ❗ Bigger (\~2.5GB) | 🐢 Slower     | Almost lossless, but higher RAM cost                        |
+| **Q6** | 🟩 Best       | ❌ Heavier          | 🐢 Slowest    | Almost like the original model — overkill for Gitlaw        |

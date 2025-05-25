@@ -1,17 +1,24 @@
 [ai]
-# "Online" or "Offline"
-mode = "Offline"
 # e.g., "deepseek", "gpt-3.5-turbo"
 model = "deepseek"
-# For offline models
-path = "hello world"
-# For online API's
-url = "http://localhost:11434/api/generate"
-# Optional: only needed for online APIs
-api_key = ""
-# | Temp | Behavior                           |
-# | ---- | ---------------------------------- |
-# | 0.0  | Deterministic (always same output) |
-# | 0.7  | Balanced (some variation)          |
-# | 1.0  | Creative, can be weird             |
+# model Path
+path = "../test"
+# Phi-2 Temp
+#| Temp        | Behavior                                                |
+#| ----------- | ------------------------------------------------------- |
+#| `0.0`       | 🔒 Totally deterministic (always gives same answer)     |
+#| `0.2 – 0.5` | ✍️ Reasonable, focused writing                          |
+#| `0.7 – 1.0` | 🌀 More creative, looser summaries                      |
+#| `> 1.0`     | ⚠️ Chaotic, unpredictable (not recommended for commits) |
 temperature = 0.7
+
+[engine]
+# Optional: full path to compiled binary
+# e.g., from `llama.cpp/main` or bundled `gitlaw-engine`
+path = "~/.gitlaw/bin/llama"
+
+# url path
+[download]
+# Direct URLs to download dependencies if needed
+engine = "https://github.com/ggml-org/llama.cpp/releases/download/b5476/llama-b5476-bin-ubuntu-x64.zip"
+model = "https://huggingface.co/TheBloke/phi-2-GGUF/resolve/main/phi-2.Q4_K_M.gguf?download=true"

@@ -1,34 +1,21 @@
-use super::types::{Config, Mode};
+use super::types::{AiColumns, Config, DownloadColumns, EngineColumns};
 use crate::std_error_exit;
-use serde::Serialize;
 use std::fs::write;
-
-// ----------------------
-// Ai Table Model
-// ----------------------
-#[derive(Serialize)]
-pub struct AiTable {
-    mode: Mode,
-    path: String,
-    model: String,
-    url: String,
-    api_key: String,
-    temperature: f32,
-}
 
 pub fn create_toml(path: &str) {
     // ----------------------
     // Default Configuration
     // ----------------------
     let config = Config {
-        ai: AiTable {
-            mode: Mode::Offline,
+        ai: AiColumns {
             path: "".into(),
-            model: "".into(),
-            url: "".into(),
-            api_key: "".into(),
             temperature: 0.7,
         },
+        download: DownloadColumns {
+            engine: "".into(),
+            model: "".into(),
+        },
+        engine: EngineColumns { path: "".into() },
     };
 
     // ----------------------
