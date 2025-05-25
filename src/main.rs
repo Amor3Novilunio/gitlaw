@@ -4,7 +4,7 @@ use std::{
 };
 mod helpers;
 mod modules;
-use modules::toml::read::read_from_file;
+use modules::{engine::download::download_engine, toml::read::settings};
 
 // flow
 // initial check on toml
@@ -24,8 +24,13 @@ use modules::toml::read::read_from_file;
 // after
 // code from after
 
+// !! new REq
+// reqwest for downloading
+//  need to think about how the flow works for this one 
+
 fn main() {
-    let toml_config = read_from_file();
+    // let toml_settings = settings();
+    download_engine("url", "destination");
 
     let args: Vec<String> = env::args().skip(1).collect();
 
