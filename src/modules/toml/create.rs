@@ -2,6 +2,9 @@ use super::types::{AiColumns, Config, DownloadColumns, EngineColumns};
 use crate::std_error_exit;
 use std::fs::write;
 
+// ------------
+// Create Toml
+// ------------
 pub fn create_toml(path: &str) {
     // ----------------------
     // Default Configuration

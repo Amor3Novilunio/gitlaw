@@ -7,9 +7,9 @@ use toml::from_str;
 
 use super::create::create_toml;
 
-// ----------------------
+// ----------------------------
 // Extract table Configuration
-// ----------------------
+// ----------------------------
 pub fn extract_table<T: DeserializeOwned>() -> T {
     // ----------------------
     // Toml Name & Path Location

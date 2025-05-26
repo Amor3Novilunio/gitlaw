@@ -1,12 +1,23 @@
+use super::read::directory_exist;
+use crate::std_error_exit;
 use reqwest::blocking::get;
 use std::{
-    fs::{File, create_dir_all},
+    fs::File,
     io::{BufWriter, copy},
 };
 
-use crate::std_error_exit;
+use super::types::Download;
 
-pub fn download(url: &str, directory: &str, file_name: &str) {
+// --------------
+// Download File
+// --------------
+pub fn download(
+    Download {
+        directory,
+        file_name,
+        url,
+    }: Download,
+) {
     // ----------------------
     // send request for download
     // ----------------------
@@ -18,15 +29,12 @@ pub fn download(url: &str, directory: &str, file_name: &str) {
     // ----------------------
     // Create for Directories
     // ----------------------
-    match create_dir_all(directory) {
-        Ok(res) => res,
-        Err(err) => std_error_exit!(format!("Failed to Create Directories : {}", err)),
-    };
+    directory_exist(&directory);
 
     // ----------------------
     // File Creation
     // ----------------------
-    let full_path = format!("{}/{}", directory, file_name);
+    let full_path = format!("{}/{}", &directory, file_name);
 
     let file = match File::create(&full_path) {
         Ok(res) => res,

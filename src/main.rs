@@ -4,6 +4,7 @@ use std::{
 };
 mod helpers;
 mod modules;
+use modules::download::{read::{check_file},types::{Download}};
 
 // flow
 // initial check on toml
@@ -23,12 +24,16 @@ mod modules;
 // after
 // code from after
 
-// !! new REq
-// reqwest for downloading
-//  need to think about how the flow works for this one 
+// !! Test
+// test check_file
+//  if check_file works as intended
+//  create the logic flow in the main
+//  test run the llama.cpp and the model
+
 
 fn main() {
     // let toml_settings = settings();
+    check_file(Download {directory:"".into(),file_name:"".into(),url:"".into()});
 
     let args: Vec<String> = env::args().skip(1).collect();
 
