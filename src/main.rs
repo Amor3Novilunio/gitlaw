@@ -1,11 +1,15 @@
-use std::{
-    env,
-    process::{Command, exit},
-};
+// Registry
+mod commands;
 mod helpers;
 mod modules;
-use modules::download::{read::check_file, types::Download};
-use modules::toml;
+
+// Injection
+use std::{env, process::Command};
+
+use commands::{commit, config, setup};
+// use gitlaw::modules::toml::read::config;
+// use modules::download::{read, types};
+// use modules::toml;
 
 // flow
 // initial check on toml
@@ -26,46 +30,27 @@ use modules::toml;
 // code from after
 
 // !! Test
-// test check_file
-//  create the logic flow in the main
+// test
+//  create the logic flow in the maincheck_file
 //  test run the llama.cpp and the model
 
 fn main() {
-    let toml_config = toml::read::config();
-    check_file(Download {
-        directory: "./".into(),
-        file_name: toml_config.engine.file_name,
-        url: toml_config.download.engine,
-    });
+    // let toml_config = toml::read::config();
+    // read::check_file(types::Download {
+    //     directory: "./".into(),
+    //     file_name: toml_config.engine.file_name,
+    //     url: toml_config.download.engine,
+    // });
 
     let args: Vec<String> = env::args().skip(1).collect();
 
     let git_command = Command::new("git");
 
-    match args.get(0).map(String::as_str) {
-        Some("commit") => println!("Pending"),
-        Some(_) => passthrough(git_command, args),
-        None => {
-            eprintln!("command not found");
-            exit(1);
-        }
-    }
-}
-
-fn passthrough(mut command: Command, args: Vec<String>) {
-    match command.args(args).output() {
-        Ok(output) => {
-            print!("{}", String::from_utf8_lossy(&output.stdout));
-
-            if !output.status.success() {
-                eprintln!("{}", String::from_utf8_lossy(&output.stderr));
-            }
-
-            exit(output.status.code().unwrap_or(1));
-        }
-        Err(err) => {
-            eprint!("gitlaw : Failed to run git: {}", err);
-            exit(1);
-        }
+    match args.first().map(String::as_str) {
+        Some("setup") => setup::run(),
+        Some("config") => config::run(),
+        Some("commit") => commit::run(),
+        Some(_) => commands::passthrough(git_command, args),
+        None => std_error_exit!("Command not Found"),
     }
 }

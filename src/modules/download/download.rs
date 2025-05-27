@@ -1,6 +1,5 @@
-use super::read::directory_exist;
+use super::download_helper::{directory_exist, progress_bar};
 use crate::std_error_exit;
-use indicatif::{ProgressBar, ProgressStyle};
 use reqwest::blocking::get;
 use std::{
     fs::File,
@@ -67,32 +66,4 @@ pub fn new(
         Ok(_) => progress_bar.finish_with_message(format!("Download Complete : {}", file_name)),
         Err(err) => std_error_exit!(format!("Failed to Write File : {}", err)),
     }
-}
-
-// --------------
-// Progress bar for download
-// --------------
-pub fn progress_bar(total_size: u64, file_name: &String) -> ProgressBar {
-    // ----------------------
-    // Progress Bar Initializer
-    // ----------------------
-    let progress_bar = ProgressBar::new(total_size);
-
-    // ----------------------
-    // Progress Bar Design
-    // ----------------------
-    let progress_bar_template = match ProgressStyle::with_template(
-        "⏬ {msg}\n[{bar:40.cyan/blue}] {bytes}/{total_bytes} ({eta})",
-    ) {
-        Ok(res) => res,
-        Err(err) => std_error_exit!(format!("Failed to Build Progress Bar Template : {}", err)),
-    };
-
-    // ----------------------
-    // Progress Bar Setter
-    // ----------------------
-    progress_bar.set_style(progress_bar_template);
-    progress_bar.set_message(format!("Downloading : {}", file_name));
-
-    progress_bar
 }
