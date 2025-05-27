@@ -7,17 +7,17 @@ use std::{
     io::{BufWriter, copy},
 };
 
-use super::types::Download;
+use super::types;
 
 // --------------
 // Download File
 // --------------
-pub fn download(
-    Download {
+pub fn new(
+    types::Download {
         directory,
         file_name,
         url,
-    }: Download,
+    }: types::Download,
 ) {
     // ----------------------
     // send request for download
@@ -69,6 +69,9 @@ pub fn download(
     }
 }
 
+// --------------
+// Progress bar for download
+// --------------
 pub fn progress_bar(total_size: u64, file_name: &String) -> ProgressBar {
     // ----------------------
     // Progress Bar Initializer

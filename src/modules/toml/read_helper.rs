@@ -5,7 +5,7 @@ use serde::de::DeserializeOwned;
 
 use toml::from_str;
 
-use super::create::create_toml;
+use super::create;
 
 // ----------------------------
 // Extract table Configuration
@@ -28,7 +28,7 @@ pub fn extract_table<T: DeserializeOwned>() -> T {
     // Toml Error Handling
     // ----------------------
     if load_toml_config.is_empty() {
-        create_toml(path);
+        create::new(path);
         return extract_table();
     }
 

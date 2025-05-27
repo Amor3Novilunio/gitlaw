@@ -5,7 +5,7 @@ use std::fs::write;
 // ------------
 // Create Toml
 // ------------
-pub fn create_toml(path: &str) {
+pub fn new(path: &str) {
     // ----------------------
     // Default Configuration
     // ----------------------

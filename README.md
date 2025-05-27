@@ -2,49 +2,93 @@
 
 **A modern, opinionated Git CLI wrapper that enforces commit structure, enables AI-assisted messages, and auto-documents your code history — one law at a time.**
 
+Gitlaw combines strong commit discipline with offline AI tooling and changelog automation. It is modular by design: you can plug in any LLM or engine you like — but by default, it uses **`llama.cpp`** and **`phi-2`** for local inference.
+
 ---
 
 ## ✨ Features
 
-- 🔒 **Enforced commit rules** (conventional commits, no WIP, length limits)
-- 🤖 **AI-generated commit messages** based on your Git diff
-- 📋 **Interactive commit UI** — approve, rewrite, or regenerate messages
-- 📁 **Auto-generates law documents** like `gitlaw/law42.md`
-- 🧠 **Diff-based changelogs** — every law captures before/after changes
-- 🧼 **Passthrough for all non-commit Git commands**
+- 🔒 **Commit validation** — conventional commit format, block "WIP", length enforcement
+- 🧠 **AI-powered commit suggestions** — generated from staged Git diffs
+- 📋 **Interactive commit flow** — approve, regenerate, or rewrite AI suggestions
+- 📁 **Auto-documentation** — commit messages with `lawXX` tag produce changelogs
+- 🧼 **Transparent Git passthrough** — works like Git for everything else
 
 ---
 
 ## 🛠️ Installation
 
+### 1. Clone and build Gitlaw
+
 ```bash
 git clone https://github.com/your-username/gitlaw.git
 cd gitlaw
 cargo build --release
-```
+````
 
-Then add it to your `PATH`:
+Then add Gitlaw to your `PATH`:
 
 ```bash
 export PATH="$PWD/target/release:$PATH"
 ```
 
+### 2. Install the default AI engine (llama.cpp)
+
+```bash
+git clone https://github.com/ggerganov/llama.cpp
+cd llama.cpp
+make
+```
+
+Ensure the built binary (e.g., `main`) is added to your path or referenced in `gitlaw.toml`.
+
+### 3. Download a Phi-2 model (Recommended: Q4)
+
+```bash
+wget https://huggingface.co/TheBloke/phi-2-GGUF/resolve/main/phi-2.Q4_K_M.gguf
+mv phi-2.Q4_K_M.gguf path/to/your/models/
+```
+
+---
+
+## ⚙️ Configuration
+
+Gitlaw is fully configurable via a TOML file (`gitlaw.toml`). Example:
+
+```toml
+[model]
+file_name = "phi-2.Q4_K_M.gguf"
+path = "path/to/your/models"
+temperature = 0.7
+
+[engine]
+file_name = "llama.cpp"
+path = "~/.gitlaw/bin/llama"
+
+[download]
+engine = "https://github.com/ggml-org/llama.cpp/releases/download/b5476/llama-b5476-bin-ubuntu-x64.zip"
+model = "https://huggingface.co/TheBloke/phi-2-GGUF/resolve/main/phi-2.Q4_K_M.gguf?download=true"
+```
+
+💡 *A future `gitlaw init` command will automate this setup: download defaults, apply Git config, and scaffold the repo.*
+
 ---
 
 ## ⚙️ Usage
 
-### 🧑‍⚖️ Commit (AI + Validation)
+### 🧑‍⚖️ AI-Backed Commit
 
 ```bash
 gitlaw commit
 ```
 
-Gitlaw will:
-1. Analyze your staged changes
-2. Ask AI to generate a conventional commit message
-3. Present options to accept, regenerate, or write your own
-4. Automatically commit with the chosen message
-5. Save the diff as `gitlaw/law42.md` if the message includes `law42`
+This will:
+
+1. Analyze staged changes
+2. Run the local AI model to suggest a commit message
+3. Prompt you to accept, regenerate, or write your own
+4. Commit with the selected message
+5. If message includes `lawXX`, generate `gitlaw/lawXX.md` changelog
 
 ### 🧪 Example
 
@@ -62,53 +106,40 @@ And creates:
 
 ```
 gitlaw/
-  └─ law42.md   # includes before/after code blocks per file
+  └─ law42.md   # includes before/after diffs
 ```
+
+---
+
+## 🤖 Model Quality Reference
+
+Choose the model quantization based on your speed/quality needs:
+
+| Level  | Quality       | Size               | Speed         | Notes                                       |
+| ------ | ------------- | ------------------ | ------------- | ------------------------------------------- |
+| **Q2** | 🟥 Low        | ✅ Smallest         | ⚡ Fastest     | Often too lossy for good summaries          |
+| **Q3** | 🟧 Medium-low | ✅ Small            | ⚡ Fast        | Okay for basic tasks, not great for commits |
+| **Q4** | 🟨 Good       | ✅ Balanced         | ⚡ Fast enough | 👍 Recommended balance of quality and speed |
+| **Q5** | 🟩 Very good  | ❗ Larger (\~2.5GB) | 🐢 Slower     | High quality, more RAM usage                |
+| **Q6** | 🟩 Best       | ❌ Heavy            | 🐢 Slowest    | Overkill for Gitlaw; nearly full-precision  |
 
 ---
 
 ## 🚀 Roadmap
 
-- [x] Basic Git passthrough
-- [ ] Commit validation (prefix, WIP block, max length)
-- [ ] Extract commit message from args
-- [ ] AI-generated commit messages (OpenAI/local model)
-- [ ] Interactive CLI prompt for message selection
-- [ ] Auto-law doc generation from diffs
-- [ ] Customizable commit rules via config(optional? maybe? who knows?)
-- [ ] Plugin system for rule extensions(optional? maybe? who knows?)
+* [x] Git passthrough for non-commit commands
+* [x] Modular AI model + engine config
+* [x] Offline-only AI (default: llama.cpp + phi-2)
+* [x] AI-generated commit messages
+* [x] AI temperature control
+* [ ] `gitlaw init` for setup + scaffolding
+* [ ] Arg-based commit message override (`gitlaw commit -m`)
+* [ ] Fully customizable commit rules via config
+* [ ] Plugin system for rule and generator extensions
 
-## ⚙️ AI Modes
+```
 
-Gitlaw supports two modes of AI commit generation:
+---
 
-### Offline Mode
-- Runs AI models **locally**
-- Requires downloading a model (e.g., `deepseek`)
-- No internet required after setup
-
-### Online Mode
-- Uses public APIs like OpenAI or Groq
-- Requires an API key and an internet connection
-- May be subject to rate limits or usage caps
-- ⚠️ online models have a token limit per request for free tier
-   - 🧠 Think of tokens like words + punctuation:
-   - "fix: update docs" = ~5 tokens
-
-
-# NEW REQUIREMENTS
-
- - no more online
- - download ph-2 model | these models have a pros n cons
- - we need to install llama.cpp not just phi-2
-
-## I REALLY NEED TO UPDATE THIS README DUE TO NEW REQUIREMENTS
-
-
-| Level  | Quality       | Size               | Speed         | Notes                                                       |
-| ------ | ------------- | ------------------ | ------------- | ----------------------------------------------------------- |
-| **Q2** | 🟥 Low        | ✅ Smallest         | ⚡ Fastest     | Often too lossy for good summaries                          |
-| **Q3** | 🟧 Medium-low | ✅ Small            | ⚡ Fast        | Okay for basic tasks, but not reliable for commit summaries |
-| **Q4** | 🟨 Good       | ✅ Balanced         | ⚡ Fast enough | 👍 Great quality/speed tradeoff (RECOMMENDED)               |
-| **Q5** | 🟩 Very good  | ❗ Bigger (\~2.5GB) | 🐢 Slower     | Almost lossless, but higher RAM cost                        |
-| **Q6** | 🟩 Best       | ❌ Heavier          | 🐢 Slowest    | Almost like the original model — overkill for Gitlaw        |
+Let me know if you want a minimal or light version of this README (e.g., for crates.io or GitHub summary).
+```

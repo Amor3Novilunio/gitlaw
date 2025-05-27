@@ -1,7 +1,7 @@
 use std::{fs::create_dir_all, path::Path};
 
-use super::download::download;
-use super::types::Download;
+use super::download;
+use super::types;
 
 use crate::std_error_exit;
 
@@ -9,11 +9,11 @@ use crate::std_error_exit;
 // Checks if file Exist
 // ---------------------
 pub fn check_file(
-    Download {
+    types::Download {
         directory,
         file_name,
         url,
-    }: Download,
+    }: types::Download,
 ) {
     // ----------------------
     // check if file does not exist
@@ -21,7 +21,7 @@ pub fn check_file(
     let full_path = format!("{}/{}", directory, file_name);
 
     if !Path::new(&full_path).exists() {
-        download(Download {
+        download::new(types::Download {
             url,
             directory,
             file_name,
