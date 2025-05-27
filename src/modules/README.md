@@ -17,9 +17,10 @@ Each module is a **self-contained unit** that handles one feature or responsibil
 
 ## 🧩 Current Modules
 
-| Module      | Description                                                |
-|-------------|------------------------------------------------------------|
-| `toml/`     | Handles config loading, writing defaults, and type mapping |
+| Module      | Description                                                                 |
+|-------------|-----------------------------------------------------------------------------|
+| `download/` | Handles downloading via url, directory placement & filename                 |
+| `toml/`     | Handles config loading, writing defaults, and type mapping                  |
 
 ---
 
