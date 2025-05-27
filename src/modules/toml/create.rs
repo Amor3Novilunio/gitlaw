@@ -1,4 +1,4 @@
-use super::types::{AiColumns, Config, DownloadColumns, EngineColumns};
+use super::types::{Config, DownloadColumns, EngineColumns, ModelColumns};
 use crate::std_error_exit;
 use std::fs::write;
 
@@ -10,15 +10,19 @@ pub fn create_toml(path: &str) {
     // Default Configuration
     // ----------------------
     let config = Config {
-        ai: AiColumns {
+        model: ModelColumns {
             path: "".into(),
+            file_name: "".into(),
             temperature: 0.7,
+        },
+        engine: EngineColumns {
+            path: "".into(),
+            file_name: "".into(),
         },
         download: DownloadColumns {
             engine: "".into(),
             model: "".into(),
         },
-        engine: EngineColumns { path: "".into() },
     };
 
     // ----------------------

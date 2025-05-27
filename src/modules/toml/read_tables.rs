@@ -1,11 +1,11 @@
 use super::read_helper::extract_table;
-use super::types::{AiTable, DownloadTable, EngineTable};
+use super::types::{ModelTable, DownloadTable, EngineTable};
 
 // ---------------------------
-// Extract AI Table From Toml
+// Extract Model Table From Toml
 // ---------------------------
-pub fn extract_ai_table() -> AiTable {
-    extract_table::<AiTable>()
+pub fn extract_model_table() -> ModelTable {
+    extract_table::<ModelTable>()
 }
 
 // -------------------------------
