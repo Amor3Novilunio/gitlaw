@@ -9,3 +9,10 @@ macro_rules! std_error_exit {
         ::std::process::exit(1);
     }};
 }
+
+#[macro_export]
+macro_rules! dprintln {
+    ($message:expr) => {{
+        println!("{:?}", $message);
+    }};
+}

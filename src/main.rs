@@ -6,7 +6,7 @@ mod modules;
 // Injection
 use std::{env, process::Command};
 
-use commands::{commit, config, setup};
+use commands::{commit, motion, summon};
 // use gitlaw::modules::toml::read::config;
 // use modules::download::{read, types};
 // use modules::toml;
@@ -47,8 +47,8 @@ fn main() {
     let git_command = Command::new("git");
 
     match args.first().map(String::as_str) {
-        Some("setup") => setup::run(),
-        Some("config") => config::run(),
+        Some("summon") => summon::run(args),
+        Some("motion") => motion::run(),
         Some("commit") => commit::run(),
         Some(_) => commands::passthrough(git_command, args),
         None => std_error_exit!("Command not Found"),

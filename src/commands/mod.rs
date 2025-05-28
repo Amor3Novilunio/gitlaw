@@ -1,10 +1,14 @@
 // Registry
 pub mod commit;
-pub mod config;
-pub mod setup;
+pub mod motion;
+pub mod summon;
+
+// gitlaw
 
 // Injection
 use std::process::{Command, exit};
+
+use gitlaw::std_error_exit;
 
 pub fn passthrough(mut command: Command, args: Vec<String>) {
     match command.args(args).output() {
@@ -17,9 +21,6 @@ pub fn passthrough(mut command: Command, args: Vec<String>) {
 
             exit(output.status.code().unwrap_or(1));
         }
-        Err(err) => {
-            eprint!("gitlaw : Failed to run git: {}", err);
-            exit(1);
-        }
+        Err(err) => std_error_exit!(format!("gitlaw : Failed to run git: {}", err)),
     }
 }
