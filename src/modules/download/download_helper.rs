@@ -17,9 +17,9 @@ pub fn directory_exist(directory: &str) {
     }
 }
 
-// --------------
+// --------------------------
 // Progress bar for download
-// --------------
+// --------------------------
 pub fn progress_bar(total_size: u64, file_name: &String) -> ProgressBar {
     // ----------------------
     // Progress Bar Initializer

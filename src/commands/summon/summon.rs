@@ -1,55 +1,53 @@
-// gitlaw summon [OPTIONS]
+use super::engine::summon_engine;
+use super::model::summon_model;
+use super::summon_flags::validate_flags;
+use super::types::Flags;
 
-// 🔮 Summon the powers Gitlaw needs to operate.
-// You may summon the engine, model, or both.
+use gitlaw::helpers::commands::skip_sub_command;
 
-// OPTIONS:
-//   -e, --engine     Summon the Gitlaw engine
-//   -m, --model      Summon the AI model
-//   -h, --help       Show this mystical guide
-
-// use std::process::Command;
-
-use gitlaw::{dprintln, std_error_exit};
-
+// ------------------------------------------
+// summon Command
+// aka Download Based on Toml Configuration
+// ------------------------------------------
 pub fn run(args: Vec<String>) {
-    // flags
-    dprintln!(args);
+    // ----------------------------
+    // remove summon from the args
+    // ----------------------------
+    let args: Vec<String> = skip_sub_command(args);
 
-    // and for this we dont need git argument we only need the flags
-
+    // ------------------------------------
+    // if no flags detected | download both
+    // ------------------------------------
     if args.is_empty() {
-        help();
+        // trigger download for all;
+        summon_engine();
+        summon_model();
     }
 
+    // ------------
+    // Flag Checker
+    // ------------
+    let mut flags: Flags = Flags {
+        engine: false,
+        model: false,
+        help: false,
+        invalid: false,
+    };
+
+    // --------------------
+    // Update flags based on args
+    // --------------------
     for flag in args {
-        if flag.contains("-h") || flag.contains("--help") {
-            help();
-        }
-
         match flag.as_str() {
-            "-e" | "--engine" => summon_engine(),
-            "-m" | "--model" => summon_model(),
-            "-h" | "--help" => help(),
-            _ => continue,
+            "-h" | "--help" => flags.help = true,
+            "-e" => flags.engine = true,
+            "-m" => flags.model = true,
+            _ => flags.invalid = true,
         }
     }
-}
 
-fn help() {
-    std_error_exit!(
-        "
-         Unknown Flag Detected.\n\n\
-             OPTIONS:\n  \
-               -e, --engine     Download the Gitlaw engine\n  \
-               -m, --model      Download the AI model\n  \
-               -h, --help       Show this mystical guide"
-    );
-}
-
-fn summon_engine() {
-    println!("BEEP BOOP BAAP ENGINE");
-}
-fn summon_model() {
-    println!("BEEP BOOP BAAP Model");
+    // ----------------
+    // Flag Initializer
+    // ----------------
+    validate_flags(flags);
 }
