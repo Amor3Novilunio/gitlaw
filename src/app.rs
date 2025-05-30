@@ -23,10 +23,10 @@ use super::commands::{commit, motion, passthrough, summon};
 // after
 // code from after
 
-// !! Test
-// test
-//  create the logic flow in the maincheck_file
-//  test run the llama.cpp and the model
+// !! todo
+// !! summon engine and download integration
+// !! create setup command for toml creation
+// !! start with commit & test the model there if it is working as intended
 
 // ----------------------------
 // Sub Command Matching

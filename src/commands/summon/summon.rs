@@ -21,6 +21,7 @@ pub fn run(args: Vec<String>) {
     if args.is_empty() {
         // trigger download for all;
         summon_engine();
+        println!("\n");
         summon_model();
     }
 
