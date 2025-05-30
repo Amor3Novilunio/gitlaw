@@ -2,7 +2,7 @@
 # Model Name
 file_name = "phi-2.gguf"
 # Model Location
-path = "./"
+path = "./file"
 # Phi-2 Temp
 #| Temp        | Behavior                                                |
 #| ----------- | ------------------------------------------------------- |
@@ -15,7 +15,7 @@ temperature = 0.7
 [engine]
 # Optional: full path to compiled binary
 # e.g., from `llama.cpp/main` or bundled `gitlaw-engine`
-path = "./"
+path = "./file"
 file_name = "llama.cpp"
 
 # url path

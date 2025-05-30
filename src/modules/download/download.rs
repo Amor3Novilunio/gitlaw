@@ -1,5 +1,5 @@
 use super::download_helper::{directory_exist, progress_bar};
-use crate::{dprintln, std_error_exit};
+use crate::std_error_exit;
 use reqwest::blocking::{Response, get};
 use std::{
     fs::File,
@@ -18,17 +18,10 @@ pub fn new(
         url,
     }: types::New,
 ) {
-    // !! new is only a route a compilation of concerns
-    // !! flow
-    // !! send the request and get the response
-    // !! if request safe proceed
-    // !! start checking directory and create it if missing
-    // !!
-
     // --------------------------
     // send request for download
     // --------------------------
-    let mut response = match get(&url) {
+    let mut response: Response = match get(&url) {
         Ok(res) => res,
         Err(err) => std_error_exit!(format!("Failed To Make HTTP Request : {}", err)),
     };
@@ -38,15 +31,20 @@ pub fn new(
     // ----------------------
     directory_exist(&directory);
 
-    // ----------------------
+    // ---------------
     // File Creation
-    // ----------------------
+    // ---------------
     let full_path = format!("{}/{}", &directory, file_name);
 
-    let file = match File::create(&full_path) {
+    let file: File = match File::create(&full_path) {
         Ok(res) => res,
         Err(err) => std_error_exit!(format!("Failed to Create File : {}", err)),
     };
+
+    // ----------------------
+    // Optimize Write for performance
+    // ----------------------
+    let mut write_optimize = BufWriter::new(&file);
 
     // ------------------------------------
     // Get Total Size of the response file
@@ -59,34 +57,46 @@ pub fn new(
         )),
     };
 
+    // -------------------------
+    // Progress Bar Initializer
+    // -------------------------
+    let progress_bar = progress_bar(total_size, &file_name);
+
     // --------------------------------------
     // Collect Download Data By Stream Chunk
     // --------------------------------------
+    let mut collected_stream_bytes: u64 = 0;
     let mut buf: [u8; 32 * 1024] = [0u8; 32 * 1024];
 
-    let download_snapshot = match response.read(&mut buf) {
-        Ok(res) => res,
-        Err(err) => std_error_exit!(format!("Failed to read from response stream : {}", err)),
-    };
+    loop {
+        // -------------------------------------------------
+        // get a snapshot of the current stream byte chunk
+        // -------------------------------------------------
+        let download_snapshot = match response.read(&mut buf) {
+            Ok(0) => {
+                progress_bar.finish();
+                break;
+            }
+            Ok(res) => res,
+            Err(err) => std_error_exit!(format!("Failed to read from response stream : {}", err)),
+        };
 
+        // -----------------------------
+        // Sum of stream bytes received
+        // -----------------------------
+        collected_stream_bytes += download_snapshot as u64;
 
-    // -------------------------
-    // Progress Bar For Writing
-    // -------------------------
-    let write_progress_bar = progress_bar(total_size, &file_name);
+        // -----------------------------
+        // progressbar position placement
+        // -----------------------------
+        progress_bar.set_position(collected_stream_bytes);
 
-    // // ----------------------
-    // // Optimize Write for performance
-    // // ----------------------
-    // let mut write_optimize = BufWriter::new(file);
-
-    // // ----------------------
-    // // Transfer the response data stream to write
-    // // ----------------------
-    // match copy(&mut response, &mut write_optimize) {
-    //     Ok(_) => {
-    //         write_progress_bar.finish_with_message(format!("Download Complete : {}", file_name))
-    //     }
-    //     Err(err) => std_error_exit!(format!("Failed to Write File : {}", err)),
-    // }
+        // ----------------------
+        // Transfer the response data stream to write
+        // ----------------------
+        match copy(&mut response, &mut write_optimize) {
+            Ok(_) => progress_bar.finish_with_message(format!("Download Complete : {}", file_name)),
+            Err(err) => std_error_exit!(format!("Failed to Write File : {}", err)),
+        }
+    }
 }
