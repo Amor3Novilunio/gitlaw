@@ -3,7 +3,7 @@ use crate::std_error_exit;
 use reqwest::blocking::{Response, get};
 use std::{
     fs::File,
-    io::{BufWriter, Read, copy},
+    io::{BufWriter, Read, Write},
 };
 
 use super::types;
@@ -41,11 +41,6 @@ pub fn new(
         Err(err) => std_error_exit!(format!("Failed to Create File : {}", err)),
     };
 
-    // ----------------------
-    // Optimize Write for performance
-    // ----------------------
-    let mut write_optimize = BufWriter::new(&file);
-
     // ------------------------------------
     // Get Total Size of the response file
     // ------------------------------------
@@ -62,8 +57,13 @@ pub fn new(
     // -------------------------
     let progress_bar = progress_bar(total_size, &file_name);
 
+    // ----------------------
+    // Optimize Write for performance
+    // ----------------------
+    let mut write_optimize = BufWriter::new(file);
+
     // --------------------------------------
-    // Collect Download Data By Stream Chunk
+    // Collect Downloaded Bytes to Chunk
     // --------------------------------------
     let mut collected_stream_bytes: u64 = 0;
     let mut buf: [u8; 32 * 1024] = [0u8; 32 * 1024];
@@ -86,17 +86,16 @@ pub fn new(
         // -----------------------------
         collected_stream_bytes += download_snapshot as u64;
 
-        // -----------------------------
-        // progressbar position placement
-        // -----------------------------
-        progress_bar.set_position(collected_stream_bytes);
-
         // ----------------------
         // Transfer the response data stream to write
         // ----------------------
-        match copy(&mut response, &mut write_optimize) {
-            Ok(_) => progress_bar.finish_with_message(format!("Download Complete : {}", file_name)),
+        match write_optimize.write_all(&buf[..download_snapshot]) {
+            // -----------------------------
+            // progressbar position placement
+            // -----------------------------
+            Ok(_) => progress_bar.set_position(collected_stream_bytes),
+            // ----------------------
             Err(err) => std_error_exit!(format!("Failed to Write File : {}", err)),
-        }
+        };
     }
 }
